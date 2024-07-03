@@ -18,6 +18,7 @@ use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufRead, BufReader, Read};
 use std::path::Path;
+use std::str;
 
 pub(crate) fn swap_key_values<T: Clone, U: Hash + Eq + Copy>(
     input_hashmap: &HashMap<T, U>,
@@ -52,6 +53,23 @@ pub(crate) fn read_flat_file<P: AsRef<Path>>(
         };
         data.insert(line.trim().to_owned(), index as i64);
     }
+    Ok(data)
+}
+
+pub(crate) fn read_bytes(
+    text_bytes: &'static [u8],
+) -> Result<HashMap<String, i64>, TokenizerError> {
+    let text = match str::from_utf8(text_bytes) {
+        Ok(v) => v,
+        Err(e) => return Err(TokenizerError::VocabularyParsingError(e.to_string())),
+    };
+
+    let mut data = HashMap::new();
+
+    for (index, line) in text.lines().enumerate() {
+        data.insert(line.trim().to_owned(), index as i64);
+    }
+
     Ok(data)
 }
 

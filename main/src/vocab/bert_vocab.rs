@@ -13,7 +13,8 @@
 
 use crate::error::TokenizerError;
 use crate::vocab::base_vocab::{
-    read_flat_file, read_special_token_mapping_file, swap_key_values, SpecialTokenMap, Vocab,
+    read_bytes, read_flat_file, read_special_token_mapping_file, swap_key_values, SpecialTokenMap,
+    Vocab,
 };
 use std::collections::HashMap;
 use std::path::Path;
@@ -79,6 +80,23 @@ impl BertVocab {
             .mask_token
             .as_deref()
             .unwrap_or(DEFAULT_MASK_TOKEN)
+    }
+}
+
+impl BertVocab {
+    pub fn from_bytes(text_bytes: &'static [u8]) -> Result<BertVocab, TokenizerError> {
+        let values = read_bytes(text_bytes)?;
+        let special_token_map = SpecialTokenMap {
+            unk_token: DEFAULT_UNK_TOKEN.to_string(),
+            pad_token: Some(DEFAULT_PAD_TOKEN.to_string()),
+            bos_token: None,
+            sep_token: Some(DEFAULT_SEP_TOKEN.to_string()),
+            cls_token: Some(DEFAULT_CLS_TOKEN.to_string()),
+            eos_token: None,
+            mask_token: Some(DEFAULT_MASK_TOKEN.to_string()),
+            additional_special_tokens: None,
+        };
+        Self::from_values_and_special_token_map(values, special_token_map)
     }
 }
 
