@@ -84,7 +84,7 @@ impl BertVocab {
 }
 
 impl BertVocab {
-    pub fn from_bytes(text_bytes: &'static [u8]) -> Result<BertVocab, TokenizerError> {
+    pub fn from_bytes(text_bytes: &[u8]) -> Result<BertVocab, TokenizerError> {
         let values = read_bytes(text_bytes)?;
         let special_token_map = SpecialTokenMap {
             unk_token: DEFAULT_UNK_TOKEN.to_string(),

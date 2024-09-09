@@ -56,9 +56,7 @@ pub(crate) fn read_flat_file<P: AsRef<Path>>(
     Ok(data)
 }
 
-pub(crate) fn read_bytes(
-    text_bytes: &'static [u8],
-) -> Result<HashMap<String, i64>, TokenizerError> {
+pub(crate) fn read_bytes(text_bytes: &[u8]) -> Result<HashMap<String, i64>, TokenizerError> {
     let text = match str::from_utf8(text_bytes) {
         Ok(v) => v,
         Err(e) => return Err(TokenizerError::VocabularyParsingError(e.to_string())),
